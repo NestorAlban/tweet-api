@@ -76,6 +76,8 @@ class Tweet(BaseModel):
     )
 def singup(user: UserRegister=Body(...)):
     """
+    Sing up
+
     This path operation register a user in the app
 
     Parameters: 
@@ -124,6 +126,8 @@ def login():
     )
 def show_all_users():
     """
+    Show users
+
     This path operation shows all users in the app
 
     Parameters: 
@@ -199,8 +203,35 @@ def home():
     summary="Post a tweet",
     tags=["Tweets"]
     )
-def post():
-    pass
+def post(tweet: Tweet=Body(...)):
+    """
+    Post a Tweet
+
+    This path operation post a tweet in the app
+
+    Parameters: 
+        - Request body parameter
+            - tweet: Tweet
+    
+    Returns a json with the basic tweet information: 
+        - tweet_id: UUID
+        content: str
+        created_at: datetime
+        update_at: Optional datetime
+        by: User
+    """
+    with open("tweets.json", "r+", encoding="utf-8") as f:
+        results= json.loads(f.read())
+        tweet_dict=tweet.dict()
+        tweet_dict["tweet_id"]=str(tweet_dict["tweet_id"])
+        tweet_dict["created_at"] =str(tweet_dict["created_at"])
+        tweet_dict["update_at"] =str(tweet_dict["update_at"])
+        tweet_dict["by"]["user_id"]=str(tweet_dict["by"]["user_id"])
+        tweet_dict["by"]["birth_date"]=str(tweet_dict["by"]["birth_date"])
+        results.append(tweet_dict)
+        f.seek(0)
+        f.write(json.dumps(results))
+    return tweet
 
 ###Show a tweet
 
