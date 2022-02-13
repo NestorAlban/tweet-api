@@ -60,7 +60,7 @@ class Tweet(BaseModel):
     created_at: datetime = Field(default=datetime.now())
     update_at: Optional[datetime] = Field(default=None)
     by: User = Field(...)
-    pass
+
 
 #Path Operations
 
@@ -186,7 +186,7 @@ def update_a_user():
 
 @app.get(
     path="/",
-    response_model=List[Tweet],
+    # response_model=List[Tweet],
     status_code=status.HTTP_200_OK,
     summary="Show all tweets",
     tags=["Tweets"]
