@@ -1,14 +1,8 @@
 #Python
 import json
-from uuid import UUID
-from datetime import date
-from datetime import datetime
-from typing import Optional, List
 
-#Pydantic
-from pydantic import BaseModel
-from pydantic import EmailStr
-from pydantic import Field
+from typing import List
+
 
 #FastAPI
 from fastapi import FastAPI
@@ -16,7 +10,7 @@ from fastapi import status
 from fastapi import Body
 
 #App
-from models import User, Tweet, UserRegister
+from .models import User, Tweet, UserRegister
 
 app= FastAPI()
 
@@ -98,8 +92,11 @@ def show_all_users():
         - last_name: str
         - birth_date: datetime
     """
-    with open("users.json", "r", encoding="utf-8") as f: 
+    print("===USERS===")
+    with open("app/users.json", "r", encoding="utf-8") as f: 
+        print(f)
         results = json.loads(f.read())
+        print(results)
         return results
 
 ###Show a User
@@ -150,8 +147,13 @@ def update_a_user():
     tags=["Tweets"]
     )
 def home():
-    with open("tweets.json", "r", encoding="utf-8") as f:
-        results=json.load(f.read())
+    print("HOME")
+    with open("app/tweets.json", "r", encoding="utf-8") as f:
+        
+        print(f)
+        results=json.loads(f.read())
+        print(results)
+
         return results
 
 ###Post a tweet
