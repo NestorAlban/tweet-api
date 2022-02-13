@@ -1,66 +1,18 @@
 #Python
 import json
-from uuid import UUID
-from datetime import date
-from datetime import datetime
-from typing import Optional, List
 
-#Pydantic
-from pydantic import BaseModel
-from pydantic import EmailStr
-from pydantic import Field
+from typing import List
+
 
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
 from fastapi import Body
 
+#App
+from .models import User, Tweet, UserRegister
+
 app= FastAPI()
-
-# Models
-
-class UserBase(BaseModel):
-    user_id: UUID = Field(...)
-    email: EmailStr = Field(...)
-
-class UserLogin(UserBase):
-    password: str = Field(
-        ..., 
-        min_length=8,
-        max_length=64
-    )
-
-class User(UserBase):
-    first_name: str = Field(
-        ..., 
-        min_length=1,
-        max_length=50
-    )
-    last_name: str = Field(
-        ...,
-        min_length=1,
-        max_length=50
-    )
-    birth_date: Optional[date]= Field(default=None)
-
-class UserRegister(User):
-    password: str = Field(
-        ..., 
-        min_length=8,
-        max_length=64
-    )
-
-class Tweet(BaseModel):
-    tweet_id: UUID = Field(...)
-    content: str = Field(
-        ..., 
-        min_length=1, 
-        max_length=256
-    )
-    created_at: datetime = Field(default=datetime.now())
-    update_at: Optional[datetime] = Field(default=None)
-    by: User = Field(...)
-    pass
 
 #Path Operations
 
@@ -140,8 +92,11 @@ def show_all_users():
         - last_name: str
         - birth_date: datetime
     """
-    with open("users.json", "r", encoding="utf-8") as f: 
+    print("===USERS===")
+    with open("app/users.json", "r", encoding="utf-8") as f: 
+        print(f)
         results = json.loads(f.read())
+        print(results)
         return results
 
 ###Show a User
@@ -192,7 +147,14 @@ def update_a_user():
     tags=["Tweets"]
     )
 def home():
-    return {"Twitter API": "Working"}
+    print("HOME")
+    with open("app/tweets.json", "r", encoding="utf-8") as f:
+        
+        print(f)
+        results=json.loads(f.read())
+        print(results)
+
+        return results
 
 ###Post a tweet
 
