@@ -1,8 +1,9 @@
 #Python
+from calendar import c
+import json
 import json
 
 from typing import List
-
 
 #FastAPI
 from fastapi import FastAPI
@@ -10,9 +11,36 @@ from fastapi import status
 from fastapi import Body
 
 #App
-from .models import User, Tweet, UserRegister
+from .models import User, Tweet, UserRegister, UserTest
 
 app= FastAPI()
+import psycopg2
+from psycopg2 import Error
+from psycopg2.extras import RealDictCursor
+
+class Database:
+    def __init__(self):
+        self.cursor = None
+        self.connection = None
+    
+    def connect_db(self):
+        try:
+            # Connect to an existing database
+            self.connection = psycopg2.connect(user="postgres",
+                                        password="mysecretpassword",
+                                        host="127.0.0.1",
+                                        port="5440",
+                                        database="postgres")
+
+            # Create a cursor to perform database operations
+            self.cursor = self.connection.cursor(cursor_factory = RealDictCursor)
+        except (Exception, Error) as error:
+            print("Error while connecting to PostgreSQL", error)
+
+    def disconnect_db(self):
+        self.cursor.close()
+        self.connection.close()
+        print("PostgreSQL connection is closed")
 
 #Path Operations
 
@@ -155,6 +183,36 @@ def home():
         print(results)
 
         return results
+
+
+
+@app.get(
+    path="/usertests",
+    response_model=List[UserTest],
+    status_code=status.HTTP_200_OK,
+    summary="Show all User tests",
+    tags=["UserTests"]
+    )
+def get_users_tests():
+    print("=GET TWEETS=")
+    users_list = []
+    db = Database()
+    db.connect_db()
+    cursor = db.cursor    
+    cursor.execute("SELECT * FROM user_tests")
+    users = cursor.fetchall()
+    
+    for user in users:
+        user = UserTest(
+            id=user['id'],
+            name=user['name'].strip(),
+            email=user['email'].strip() if user['email'] else None,
+            is_active=user['is_active'],
+            status=user['status']
+        )
+        users_list.append(user)
+    db.disconnect_db()
+    return users_list
 
 ###Post a tweet
 

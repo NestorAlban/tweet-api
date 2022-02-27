@@ -50,3 +50,10 @@ class Tweet(BaseModel):
     created_at: datetime = Field(default=datetime.now())
     update_at: Optional[datetime] = Field(default=None)
     by: User = Field(...)
+
+class UserTest(BaseModel):
+    id: int
+    name: str
+    email: Optional[str]
+    is_active: bool
+    status: bool
