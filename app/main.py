@@ -5,6 +5,11 @@ import json
 
 from typing import List
 
+# Psycopg ~ Postgresql
+import psycopg2
+from psycopg2 import Error
+from psycopg2.extras import RealDictCursor
+
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
@@ -14,9 +19,6 @@ from fastapi import Body
 from .models import User, Tweet, UserRegister, UserTest
 
 app= FastAPI()
-import psycopg2
-from psycopg2 import Error
-from psycopg2.extras import RealDictCursor
 
 class Database:
     def __init__(self):
